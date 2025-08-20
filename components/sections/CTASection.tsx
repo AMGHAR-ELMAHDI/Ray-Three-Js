@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 
 export default function CTASection() {
   return (
-    <section className="py-32 px-6 bg-foreground relative overflow-hidden min-h-screen">
+    <section
+      className="py-32 px-6 bg-foreground relative overflow-hidden  snap-start"
+      id="cta"
+    >
       <div className="absolute inset-0">
         {[...Array(40)].map((_, i) => (
           <div
@@ -18,7 +21,7 @@ export default function CTASection() {
           />
         ))}
       </div>
-      <div className="max-w-5xl mx-auto text-center relative z-10">
+      <div className=" flex justify-center items-center flex-col w-full h-full text-center relative z-10">
         <h2 className="font-serif font-bold text-5xl md:text-7xl text-background mb-8">
           Begin Your Ray Journey
         </h2>
