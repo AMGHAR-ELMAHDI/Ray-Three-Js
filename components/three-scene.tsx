@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ThreeScene() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene>();
-  const rendererRef = useRef<THREE.WebGLRenderer>();
-  const cameraRef = useRef<THREE.PerspectiveCamera>();
-  const productRef = useRef<THREE.Group>();
-  const frameRef = useRef<number>();
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const productRef = useRef<THREE.Group | null>(null);
+  const frameRef = useRef<number | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const isDraggingRef = useRef(false);
   const previousMousePositionRef = useRef({ x: 0, y: 0 });
@@ -181,7 +184,6 @@ export default function ThreeScene() {
       opacity: 0.7,
       blending: THREE.AdditiveBlending,
     });
-
     const particlesMesh = new THREE.Points(
       particlesGeometry,
       particlesMaterial
@@ -453,8 +455,30 @@ export default function ThreeScene() {
         rendererRef.current.dispose();
       }
     };
-    // Only run once on mount
-  }, []);
+  }, []); // Properly close the useEffect
+
+  // GSAP ScrollTrigger for 3D scroll-based animation (after Three.js is loaded)
+  useEffect(() => {
+    if (!isLoaded || !productRef.current || !mountRef.current) return;
+
+    const tween = gsap.to(productRef.current.rotation, {
+      y: "+=2.5",
+      ease: "power2.inOut",
+      scrollTrigger: {
+        trigger: mountRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      tween && tween.kill();
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
+  }, [isLoaded]);
 
   return (
     <div

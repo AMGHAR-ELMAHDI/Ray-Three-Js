@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CTASection() {
   return (
-    <section className="py-32 px-6 bg-foreground relative overflow-hidden">
+    <section className="py-32 px-6 bg-foreground relative overflow-hidden min-h-screen">
       <div className="absolute inset-0">
         {[...Array(40)].map((_, i) => (
           <div
